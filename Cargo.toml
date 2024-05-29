@@ -1,0 +1,13 @@
+[package]
+name = "bevy_contrib_raycast"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+authors = ["Olle Lukowski <ollelukowski@hotmail.com>"]
+description = "Raycast plugin for Bevy"
+repository = "https://github.com/Olle-Lukowski/bevy_contrib_raycast"
+readme = "README.md"
+keywords = ["gamedev", "bevy", "raycast"]
+categories = ["game-development", "game-engines"]
+
+[dependencies]
