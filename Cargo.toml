@@ -11,3 +11,4 @@ keywords = ["gamedev", "bevy", "raycast"]
 categories = ["game-development", "game-engines"]
 
 [dependencies]
+bevy = { version = "0.13", default-features = false }
