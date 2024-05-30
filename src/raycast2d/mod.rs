@@ -1,2 +1,10 @@
-pub mod arc;
+pub mod capsule;
 pub mod circle;
+pub mod ellipse;
+pub mod line;
+pub mod plane;
+pub mod polygon;
+pub mod polyline;
+pub mod rectangle;
+pub mod segment;
+pub mod triangle;

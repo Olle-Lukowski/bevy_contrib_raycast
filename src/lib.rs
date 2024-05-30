@@ -1,4 +1,7 @@
-use bevy::math::{Mat2, Quat, Ray2d, Ray3d, Vec2, Vec3};
+use bevy::math::{
+    primitives::{Direction2d, Direction3d, Primitive2d, Primitive3d},
+    Mat2, Quat, Ray2d, Ray3d, Vec2, Vec3,
+};
 
 /// The implementation for [RayCast2d] for many types.
 pub mod raycast2d;
@@ -9,19 +12,21 @@ pub mod raycast3d;
 /// The default output used for [RayCast3d]
 #[derive(Debug)]
 pub struct RayIntersection3d {
-    pub normal: Vec3,
+    pub normal: Direction3d,
+    pub position: Vec3,
     pub distance: f32,
 }
 
 /// The default output used for [RayCast2d]
 #[derive(Debug)]
 pub struct RayIntersection2d {
-    pub normal: Vec2,
+    pub normal: Direction2d,
+    pub position: Vec2,
     pub distance: f32,
 }
 
 /// An extension trait for bevy's primitive shapes, to provide raycasting functionality.
-pub trait RayCast3d {
+pub trait RayCast3d: Primitive3d {
     fn cast_ray_local(&self, ray: Ray3d, max_distance: f32) -> Option<RayIntersection3d>;
 
     fn cast_ray(
@@ -43,7 +48,7 @@ pub trait RayCast3d {
 }
 
 /// An extension trait for bevy's primitive shapes, to provide raycasting functionality.
-pub trait RayCast2d {
+pub trait RayCast2d: Primitive2d {
     fn cast_ray_local(&self, ray: Ray2d, max_distance: f32) -> Option<RayIntersection2d>;
 
     fn cast_ray(
@@ -59,6 +64,13 @@ pub trait RayCast2d {
         let local_direction = inv_rotation * *ray.direction;
         let local_ray = Ray2d::new(local_origin, local_direction);
 
-        self.cast_ray_local(local_ray, max_distance)
+        if let Some(mut intersection) = self.cast_ray_local(local_ray, max_distance) {
+            let rotation = Mat2::from_angle(angle);
+            intersection.normal = Direction2d::new(rotation * *intersection.normal).unwrap();
+            intersection.position = rotation * intersection.position + position;
+            Some(intersection)
+        } else {
+            None
+        }
     }
 }

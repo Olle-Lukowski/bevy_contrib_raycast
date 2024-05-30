@@ -1,6 +1,9 @@
 use crate::{RayCast2d, RayIntersection2d};
 
-use bevy::math::{primitives::Circle, Ray2d};
+use bevy::math::{
+    primitives::{Circle, Direction2d},
+    Ray2d,
+};
 
 impl RayCast2d for Circle {
     fn cast_ray_local(&self, ray: Ray2d, max_distance: f32) -> Option<RayIntersection2d> {
@@ -16,8 +19,11 @@ impl RayCast2d for Circle {
         } else {
             let t = (-b - discriminant.sqrt()) / (2.0 * a);
             if t > 0.0 && t < max_distance {
+                let intersection = ray.origin + t * *ray.direction;
                 Some(RayIntersection2d {
-                    normal: (ray.origin + t * *ray.direction).normalize(),
+                    // TODO: Check if unwrapping is fine
+                    normal: Direction2d::new(intersection).unwrap(),
+                    position: intersection,
                     distance: t,
                 })
             } else {
@@ -38,6 +44,8 @@ mod tests {
         let circle = Circle::new(1.0);
         let ray = Ray2d::new(Vec2::ZERO, Vec2::X);
         let intersection = circle.cast_ray(Vec2::new(3.0, 0.8), 0.0, ray, 100.0);
+
+        println!("{:?}", intersection);
         assert!(intersection.is_some());
     }
 }
