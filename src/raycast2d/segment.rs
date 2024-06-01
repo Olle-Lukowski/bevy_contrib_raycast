@@ -1,9 +1,6 @@
 use crate::{RayCast2d, RayIntersection2d};
 
-use bevy::math::{
-    primitives::{Direction2d, Segment2d},
-    Ray2d, Vec2,
-};
+use bevy::math::{primitives::Segment2d, Dir2, Ray2d, Vec2};
 
 impl RayCast2d for Segment2d {
     fn cast_ray_local(&self, ray: Ray2d, max_distance: f32) -> Option<RayIntersection2d> {
@@ -27,7 +24,7 @@ impl RayCast2d for Segment2d {
         }
 
         Some(RayIntersection2d {
-            normal: Direction2d::new(perpendicular).unwrap(),
+            normal: Dir2::new(perpendicular).unwrap(),
             position: intersection,
             distance: t,
         })

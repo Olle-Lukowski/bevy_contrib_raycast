@@ -1,6 +1,6 @@
 use bevy::math::{
-    primitives::{Direction2d, Direction3d, Primitive2d, Primitive3d},
-    Mat2, Quat, Ray2d, Ray3d, Vec2, Vec3,
+    primitives::{Primitive2d, Primitive3d},
+    Dir2, Dir3, Mat2, Quat, Ray2d, Ray3d, Vec2, Vec3,
 };
 
 /// The implementation for [RayCast2d] for many types.
@@ -10,17 +10,17 @@ pub mod raycast2d;
 pub mod raycast3d;
 
 /// The default output used for [RayCast3d]
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct RayIntersection3d {
-    pub normal: Direction3d,
+    pub normal: Dir3,
     pub position: Vec3,
     pub distance: f32,
 }
 
 /// The default output used for [RayCast2d]
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct RayIntersection2d {
-    pub normal: Direction2d,
+    pub normal: Dir2,
     pub position: Vec2,
     pub distance: f32,
 }
@@ -66,7 +66,7 @@ pub trait RayCast2d: Primitive2d {
 
         if let Some(mut intersection) = self.cast_ray_local(local_ray, max_distance) {
             let rotation = Mat2::from_angle(angle);
-            intersection.normal = Direction2d::new(rotation * *intersection.normal).unwrap();
+            intersection.normal = Dir2::new(rotation * *intersection.normal).unwrap();
             intersection.position = rotation * intersection.position + position;
             Some(intersection)
         } else {

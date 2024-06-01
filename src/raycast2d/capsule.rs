@@ -1,8 +1,8 @@
 use crate::{RayCast2d, RayIntersection2d};
 
 use bevy::math::{
-    primitives::{Capsule2d, Circle, Direction2d, Segment2d},
-    Ray2d, Vec2,
+    primitives::{Capsule2d, Circle, Segment2d},
+    Dir2, Ray2d, Vec2,
 };
 
 impl RayCast2d for Capsule2d {
@@ -10,10 +10,8 @@ impl RayCast2d for Capsule2d {
         // check intersection with the two half-circles, and the two segments
         let bottom_circle = Circle::new(self.radius);
         let top_circle = Circle::new(self.radius);
-        let left_segment =
-            Segment2d::new(Direction2d::new(-Vec2::Y).unwrap(), self.half_length * 2.0);
-        let right_segment =
-            Segment2d::new(Direction2d::new(Vec2::Y).unwrap(), self.half_length * 2.0);
+        let left_segment = Segment2d::new(Dir2::new(-Vec2::Y).unwrap(), self.half_length * 2.0);
+        let right_segment = Segment2d::new(Dir2::new(Vec2::Y).unwrap(), self.half_length * 2.0);
 
         let mut closest_intersection: Option<RayIntersection2d> = None;
 

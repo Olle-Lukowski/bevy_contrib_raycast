@@ -1,9 +1,6 @@
 use crate::{RayCast2d, RayIntersection2d};
 
-use bevy::math::{
-    primitives::{Direction2d, Ellipse},
-    Ray2d, Vec2,
-};
+use bevy::math::{primitives::Ellipse, Dir2, Ray2d, Vec2};
 
 impl RayCast2d for Ellipse {
     fn cast_ray_local(&self, ray: Ray2d, max_distance: f32) -> Option<RayIntersection2d> {
@@ -31,7 +28,7 @@ impl RayCast2d for Ellipse {
         let position = ray.origin + t * *ray.direction;
 
         let local_normal = position * inv_half_size;
-        let normal = Direction2d::new(local_normal).unwrap();
+        let normal = Dir2::new(local_normal).unwrap();
 
         Some(RayIntersection2d {
             normal,

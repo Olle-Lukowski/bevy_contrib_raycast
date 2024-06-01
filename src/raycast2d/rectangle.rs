@@ -1,8 +1,8 @@
 use crate::{RayCast2d, RayIntersection2d};
 
 use bevy::math::{
-    primitives::{Direction2d, Rectangle, Segment2d},
-    Ray2d, Vec2,
+    primitives::{Rectangle, Segment2d},
+    Dir2, Ray2d, Vec2,
 };
 
 impl RayCast2d for Rectangle {
@@ -22,8 +22,7 @@ impl RayCast2d for Rectangle {
         ];
 
         for (start, end) in edges {
-            let segment =
-                Segment2d::new(Direction2d::new(end - start).unwrap(), start.distance(end));
+            let segment = Segment2d::new(Dir2::new(end - start).unwrap(), start.distance(end));
 
             if let Some(intersection) =
                 segment.cast_ray((start + end) / 2.0, 0.0, ray, max_distance)

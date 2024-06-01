@@ -1,10 +1,15 @@
+pub mod annulus;
+pub mod arc;
 pub mod capsule;
 pub mod circle;
+pub mod circular_sector;
+pub mod circular_segment;
 pub mod ellipse;
 pub mod line;
 pub mod plane;
 pub mod polygon;
 pub mod polyline;
 pub mod rectangle;
+pub mod rhombus;
 pub mod segment;
 pub mod triangle;

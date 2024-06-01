@@ -3,7 +3,11 @@ use bevy_contrib_raycast::RayCast2d;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 enum Shape {
+    Arc,
+    Annulus,
     Circle,
+    CircularSector,
+    CircularSegment,
     Ellipse,
     Plane,
     Line,
@@ -11,25 +15,35 @@ enum Shape {
     Polyline,
     Triangle,
     Rectangle,
+    Rhombus,
     Polygon,
     RegularPolygon,
     Capsule,
 }
 
+const RED: Color = Color::linear_rgb(1.0, 0.0, 0.0);
+const GREEN: Color = Color::linear_rgb(0.0, 1.0, 0.0);
+const BLUE: Color = Color::linear_rgb(0.0, 0.0, 1.0);
+
 impl Shape {
     fn next(self) -> Self {
         match self {
-            Shape::Circle => Shape::Ellipse,
+            Shape::Arc => Shape::Annulus,
+            Shape::Annulus => Shape::Circle,
+            Shape::Circle => Shape::CircularSector,
+            Shape::CircularSector => Shape::CircularSegment,
+            Shape::CircularSegment => Shape::Ellipse,
             Shape::Ellipse => Shape::Plane,
             Shape::Plane => Shape::Line,
             Shape::Line => Shape::Segment,
             Shape::Segment => Shape::Polyline,
             Shape::Polyline => Shape::Triangle,
             Shape::Triangle => Shape::Rectangle,
-            Shape::Rectangle => Shape::Polygon,
+            Shape::Rectangle => Shape::Rhombus,
+            Shape::Rhombus => Shape::Polygon,
             Shape::Polygon => Shape::RegularPolygon,
             Shape::RegularPolygon => Shape::Capsule,
-            Shape::Capsule => Shape::Circle,
+            Shape::Capsule => Shape::Arc,
         }
     }
 }
@@ -80,11 +94,7 @@ fn draw_normal(
     origin: Vec2,
 ) {
     if let Some(hit) = shape.cast_ray(position, rotation, Ray2d::new(origin, Vec2::Y), f32::MAX) {
-        gizmos.arrow_2d(
-            hit.position,
-            hit.position + *hit.normal * 250.0,
-            Color::BLUE,
-        );
+        gizmos.arrow_2d(hit.position, hit.position + *hit.normal * 250.0, BLUE);
     }
 }
 
@@ -145,13 +155,34 @@ fn update(
     gizmos.arrow_2d(
         current_origin.0,
         current_origin.0 + Vec2::Y * 25000.0,
-        Color::GREEN,
+        GREEN,
     );
 
     match current_shape.0 {
+        Shape::Arc => {
+            let arc = Arc2d {
+                radius: 25.0,
+                half_angle: std::f32::consts::FRAC_PI_4,
+            };
+            gizmos.primitive_2d(&arc, position.0, rotation.0, RED);
+
+            draw_normal(&mut gizmos, &arc, position.0, rotation.0, current_origin.0);
+        }
+        Shape::Annulus => {
+            let annulus = Annulus::new(25.0, 100.0);
+            gizmos.primitive_2d(&annulus, position.0, rotation.0, RED);
+
+            draw_normal(
+                &mut gizmos,
+                &annulus,
+                position.0,
+                rotation.0,
+                current_origin.0,
+            );
+        }
         Shape::Circle => {
             let circle = Circle { radius: 25.0 };
-            gizmos.primitive_2d(circle, position.0, rotation.0, Color::RED);
+            gizmos.primitive_2d(&circle, position.0, rotation.0, RED);
 
             draw_normal(
                 &mut gizmos,
@@ -161,11 +192,35 @@ fn update(
                 current_origin.0,
             );
         }
+        Shape::CircularSector => {
+            let sector = CircularSector::new(25.0, std::f32::consts::FRAC_PI_4);
+            gizmos.primitive_2d(&sector, position.0, rotation.0, RED);
+
+            draw_normal(
+                &mut gizmos,
+                &sector,
+                position.0,
+                rotation.0,
+                current_origin.0,
+            );
+        }
+        Shape::CircularSegment => {
+            let segment = CircularSegment::new(25.0, std::f32::consts::FRAC_PI_4);
+            gizmos.primitive_2d(&segment, position.0, rotation.0, RED);
+
+            draw_normal(
+                &mut gizmos,
+                &segment,
+                position.0,
+                rotation.0,
+                current_origin.0,
+            );
+        }
         Shape::Ellipse => {
             let ellipse = Ellipse {
                 half_size: Vec2::new(25.0, 15.0),
             };
-            gizmos.primitive_2d(ellipse, position.0, rotation.0, Color::RED);
+            gizmos.primitive_2d(&ellipse, position.0, rotation.0, RED);
 
             draw_normal(
                 &mut gizmos,
@@ -177,9 +232,9 @@ fn update(
         }
         Shape::Plane => {
             let plane = Plane2d {
-                normal: Direction2d::new(Vec2::Y).unwrap(),
+                normal: Dir2::new(Vec2::Y).unwrap(),
             };
-            gizmos.primitive_2d(plane, position.0, rotation.0, Color::RED);
+            gizmos.primitive_2d(&plane, position.0, rotation.0, RED);
 
             draw_normal(
                 &mut gizmos,
@@ -191,18 +246,18 @@ fn update(
         }
         Shape::Line => {
             let line = Line2d {
-                direction: Direction2d::new(Vec2::Y).unwrap(),
+                direction: Dir2::new(Vec2::Y).unwrap(),
             };
-            gizmos.primitive_2d(line, position.0, rotation.0, Color::RED);
+            gizmos.primitive_2d(&line, position.0, rotation.0, RED);
 
             draw_normal(&mut gizmos, &line, position.0, rotation.0, current_origin.0);
         }
         Shape::Segment => {
             let segment = Segment2d {
-                direction: Direction2d::new(Vec2::Y).unwrap(),
+                direction: Dir2::new(Vec2::Y).unwrap(),
                 half_length: 25.0,
             };
-            gizmos.primitive_2d(segment, position.0, rotation.0, Color::RED);
+            gizmos.primitive_2d(&segment, position.0, rotation.0, RED);
 
             draw_normal(
                 &mut gizmos,
@@ -218,7 +273,7 @@ fn update(
                 Vec2::new(25.0, 0.0),
                 Vec2::new(25.0, 25.0),
             ]);
-            gizmos.primitive_2d(polyline.clone(), position.0, rotation.0, Color::RED);
+            gizmos.primitive_2d(&polyline, position.0, rotation.0, RED);
 
             draw_normal(
                 &mut gizmos,
@@ -234,7 +289,7 @@ fn update(
                 Vec2::new(25.0, 0.0),
                 Vec2::new(25.0, 25.0),
             );
-            gizmos.primitive_2d(triangle, position.0, rotation.0, Color::RED);
+            gizmos.primitive_2d(&triangle, position.0, rotation.0, RED);
 
             draw_normal(
                 &mut gizmos,
@@ -248,11 +303,23 @@ fn update(
             let rectangle = Rectangle {
                 half_size: Vec2::new(25.0, 15.0),
             };
-            gizmos.primitive_2d(rectangle, position.0, rotation.0, Color::RED);
+            gizmos.primitive_2d(&rectangle, position.0, rotation.0, RED);
 
             draw_normal(
                 &mut gizmos,
                 &rectangle,
+                position.0,
+                rotation.0,
+                current_origin.0,
+            );
+        }
+        Shape::Rhombus => {
+            let rhombus = Rhombus::new(25.0, 25.0);
+            gizmos.primitive_2d(&rhombus, position.0, rotation.0, RED);
+
+            draw_normal(
+                &mut gizmos,
+                &rhombus,
                 position.0,
                 rotation.0,
                 current_origin.0,
@@ -266,13 +333,13 @@ fn update(
                 Vec2::new(0.0, 50.0),
                 Vec2::new(-25.0, 25.0),
             ]);
-            gizmos.primitive_2d(poly.clone(), position.0, rotation.0, Color::RED);
+            gizmos.primitive_2d(&poly, position.0, rotation.0, RED);
 
             draw_normal(&mut gizmos, &poly, position.0, rotation.0, current_origin.0);
         }
         Shape::RegularPolygon => {
             let polygon = RegularPolygon::new(25.0, 10);
-            gizmos.primitive_2d(polygon, position.0, rotation.0, Color::RED);
+            gizmos.primitive_2d(&polygon, position.0, rotation.0, RED);
 
             draw_normal(
                 &mut gizmos,
@@ -284,7 +351,7 @@ fn update(
         }
         Shape::Capsule => {
             let capsule = Capsule2d::new(25.0, 100.0);
-            gizmos.primitive_2d(capsule, position.0, rotation.0, Color::RED);
+            gizmos.primitive_2d(&capsule, position.0, rotation.0, RED);
 
             draw_normal(
                 &mut gizmos,

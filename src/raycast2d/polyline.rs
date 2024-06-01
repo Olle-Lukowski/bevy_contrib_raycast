@@ -1,8 +1,8 @@
 use crate::{RayCast2d, RayIntersection2d};
 
 use bevy::math::{
-    primitives::{BoxedPolyline2d, Direction2d, Polyline2d, Segment2d},
-    Ray2d,
+    primitives::{BoxedPolyline2d, Polyline2d, Segment2d},
+    Dir2, Ray2d,
 };
 
 impl<const N: usize> RayCast2d for Polyline2d<N> {
@@ -15,8 +15,7 @@ impl<const N: usize> RayCast2d for Polyline2d<N> {
             let end = self.vertices[i + 1];
 
             // Create the edge
-            let segment =
-                Segment2d::new(Direction2d::new(end - start).unwrap(), start.distance(end));
+            let segment = Segment2d::new(Dir2::new(end - start).unwrap(), start.distance(end));
 
             // Cast the ray against the edge
             if let Some(intersection) =
@@ -46,8 +45,7 @@ impl RayCast2d for BoxedPolyline2d {
             let end = self.vertices[i + 1];
 
             // Create the edge
-            let segment =
-                Segment2d::new(Direction2d::new(end - start).unwrap(), start.distance(end));
+            let segment = Segment2d::new(Dir2::new(end - start).unwrap(), start.distance(end));
 
             // Cast the ray against the edge
             if let Some(intersection) =

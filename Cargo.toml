@@ -11,7 +11,11 @@ keywords = ["gamedev", "bevy", "raycast"]
 categories = ["game-development", "game-engines"]
 
 [dependencies]
-bevy = { version = "0.13", default-features = false }
+bevy = { git = "https://github.com/bevyengine/bevy", branch = "main", default-features = false }
 
 [dev-dependencies]
-bevy = "0.13"
+bevy = { git = "https://github.com/bevyengine/bevy", branch = "main" }
+
+# Fix for gizmos
+[patch.'https://github.com/bevyengine/bevy']
+bevy = { git = "https://github.com/Olle-Lukowski/bevy", branch = "arc_primitive" }
