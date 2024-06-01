@@ -11,7 +11,7 @@ primitive shapes, with the goal of being upstreamed once ready.
 ## Supported Bevy Versions
 | bevy  | bevy_contrib_raycast |
 | ----- | -------------------- |
-| 0.13  | main                 |
+| main  | main                 |
 
 ## License
 
