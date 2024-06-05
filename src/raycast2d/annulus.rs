@@ -6,7 +6,7 @@ impl RayCast2d for Annulus {
     fn cast_ray_local(&self, ray: Ray2d, max_distance: f32) -> Option<RayIntersection2d> {
         let oc = ray.origin;
         let length_squared = oc.length_squared();
-        
+
         if length_squared < self.inner_circle.radius * self.inner_circle.radius {
             // we are in the inner circle, find the intersection point with the border of it
             // based on ray origin and direction
@@ -23,7 +23,7 @@ impl RayCast2d for Annulus {
                     distance: t,
                 });
             }
-            
+
             // try the second t
             t = (-b + discriminant.sqrt()) / (2.0 * a);
             if t > 0.0 && t < max_distance {

@@ -11,14 +11,12 @@ impl RayCast2d for CircularSector {
 
         let oc = ray.origin;
         let length_squared = oc.length_squared();
-        if length_squared < self.arc.radius * self.arc.radius {
-            if Vec2::Y.angle_between(oc).abs() < self.arc.half_angle {
-                return Some(RayIntersection2d {
-                    normal: -ray.direction,
-                    position: ray.origin,
-                    distance: 0.0,
-                });
-            }
+        if length_squared < self.arc.radius * self.arc.radius && Vec2::Y.angle_between(oc).abs() < self.arc.half_angle {
+            return Some(RayIntersection2d {
+                normal: -ray.direction,
+                position: ray.origin,
+                distance: 0.0,
+            });
         }
 
         let mut closest = None;

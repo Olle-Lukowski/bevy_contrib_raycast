@@ -7,13 +7,11 @@ use bevy::math::{
 
 impl RayCast2d for Capsule2d {
     fn cast_ray_local(&self, ray: Ray2d, max_distance: f32) -> Option<RayIntersection2d> {
-
-
         // check intersection with the two half-circles, and the the rectangle
         let bottom_circle = Circle::new(self.radius);
         let top_circle = Circle::new(self.radius);
         let rectangle = Rectangle::new(self.radius * 2.0, self.half_length * 2.0);
-            
+
         let mut closest_intersection: Option<RayIntersection2d> = None;
 
         let shapes: [(&dyn RayCast2d, Vec2); 3] = [

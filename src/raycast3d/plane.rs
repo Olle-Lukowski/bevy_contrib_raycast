@@ -1,13 +1,18 @@
 use crate::{RayCast3d, RayIntersection3d};
 
-use bevy::math::{primitives::{Plane3d, InfinitePlane3d}, Ray3d};
+use bevy::math::{
+    primitives::{InfinitePlane3d, Plane3d},
+    Ray3d,
+};
 
 impl RayCast3d for Plane3d {
     fn cast_ray_local(&self, ray: Ray3d, max_distance: f32) -> Option<RayIntersection3d> {
         let intersection = InfinitePlane3d::new(self.normal).cast_ray_local(ray, max_distance)?;
 
         // check if we are within self.half_size
-        if intersection.position.x.abs() > self.half_size.x || intersection.position.y.abs() > self.half_size.y {
+        if intersection.position.x.abs() > self.half_size.x
+            || intersection.position.y.abs() > self.half_size.y
+        {
             return None;
         }
 

@@ -9,14 +9,15 @@ impl RayCast2d for Rhombus {
     fn cast_ray_local(&self, ray: Ray2d, max_distance: f32) -> Option<RayIntersection2d> {
         // first, we check if the ray starts inside the rhombus.
 
-        if ray.origin.x.abs() / self.half_diagonals.x + ray.origin.y.abs() / self.half_diagonals.y <= 1.0 {
+        if ray.origin.x.abs() / self.half_diagonals.x + ray.origin.y.abs() / self.half_diagonals.y
+            <= 1.0
+        {
             return Some(RayIntersection2d {
                 normal: -ray.direction,
                 position: ray.origin,
                 distance: 0.0,
             });
         }
-
 
         let mut closest: Option<RayIntersection2d> = None;
 

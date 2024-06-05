@@ -42,7 +42,6 @@ pub trait RayCast3d: Primitive3d {
         let local_ray = Ray3d::new(local_origin, local_direction);
 
         if let Some(mut intersection) = self.cast_ray_local(local_ray, max_distance) {
-            let rotation = rotation;
             intersection.position = rotation * intersection.position + position;
             intersection.normal = Dir3::new(rotation * *intersection.normal).unwrap();
             Some(intersection)

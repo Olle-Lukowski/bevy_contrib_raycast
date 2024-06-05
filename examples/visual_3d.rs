@@ -142,20 +142,20 @@ fn update(
 
     current_origin.0 += origin_movement * time.delta_seconds();
 
-    gizmos.arrow(
-        current_origin.0,
-        current_origin.0 + Vec3::Y * 10.0,
-        GREEN,
-    );
+    gizmos.arrow(current_origin.0, current_origin.0 + Vec3::Y * 10.0, GREEN);
 
     match current_shape.0 {
         Shape::Sphere => {
-            let sphere = Sphere {
-                radius: 0.5,
-            };
+            let sphere = Sphere { radius: 0.5 };
             gizmos.primitive_3d(&sphere, position.0, rotation.0, RED);
 
-            draw_normal(&mut gizmos, &sphere, position.0, rotation.0, current_origin.0);
+            draw_normal(
+                &mut gizmos,
+                &sphere,
+                position.0,
+                rotation.0,
+                current_origin.0,
+            );
         }
         Shape::Plane => {
             let plane = Plane3d {
@@ -164,7 +164,13 @@ fn update(
             };
             gizmos.primitive_3d(&plane, position.0, rotation.0, RED);
 
-            draw_normal(&mut gizmos, &plane, position.0, rotation.0, current_origin.0);
+            draw_normal(
+                &mut gizmos,
+                &plane,
+                position.0,
+                rotation.0,
+                current_origin.0,
+            );
         }
     }
 }

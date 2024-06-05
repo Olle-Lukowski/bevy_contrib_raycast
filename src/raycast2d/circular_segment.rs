@@ -16,9 +16,7 @@ impl RayCast2d for CircularSegment {
         let length_squared = oc.length_squared();
         if length_squared < self.arc.radius * self.arc.radius {
             // we also need to check if the origin is above the segment
-            if Vec2::Y.angle_between(oc).abs() < self.arc.half_angle 
-                && oc.y >= start.y.min(end.y)
-            { 
+            if Vec2::Y.angle_between(oc).abs() < self.arc.half_angle && oc.y >= start.y.min(end.y) {
                 return Some(RayIntersection2d {
                     normal: -ray.direction,
                     position: ray.origin,

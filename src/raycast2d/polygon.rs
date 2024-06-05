@@ -40,13 +40,11 @@ impl<const N: usize> RayCast2d for Polygon<N> {
 
         // check if the ray is inside the polygon
         if intersection_count % 2 == 1 {
-            Some(
-                RayIntersection2d {
-                    normal: -ray.direction,
-                    position: ray.origin,
-                    distance: 0.0,
-                }
-            )
+            Some(RayIntersection2d {
+                normal: -ray.direction,
+                position: ray.origin,
+                distance: 0.0,
+            })
         } else {
             closest_intersection
         }
@@ -88,13 +86,11 @@ impl RayCast2d for BoxedPolygon {
 
         // check if the ray is inside the polygon
         if intersection_count % 2 == 1 {
-            Some(
-                RayIntersection2d {
-                    normal: -ray.direction,
-                    position: ray.origin,
-                    distance: 0.0,
-                }
-            )
+            Some(RayIntersection2d {
+                normal: -ray.direction,
+                position: ray.origin,
+                distance: 0.0,
+            })
         } else {
             closest_intersection
         }
