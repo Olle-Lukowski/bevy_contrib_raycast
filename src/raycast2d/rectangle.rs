@@ -7,6 +7,15 @@ use bevy::math::{
 
 impl RayCast2d for Rectangle {
     fn cast_ray_local(&self, ray: Ray2d, max_distance: f32) -> Option<RayIntersection2d> {
+        // check if the ray origin is inside the rectangle
+
+        if ray.origin.x.abs() < self.half_size.x && ray.origin.y.abs() < self.half_size.y {
+            return Some(RayIntersection2d {
+                normal: -ray.direction,
+                position: ray.origin,
+                distance: 0.0,
+            });
+        }
         let mut closest_intersection: Option<RayIntersection2d> = None;
 
         let bottom_left = -self.half_size;

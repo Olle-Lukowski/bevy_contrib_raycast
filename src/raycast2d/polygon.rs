@@ -8,6 +8,7 @@ use bevy::math::{
 impl<const N: usize> RayCast2d for Polygon<N> {
     fn cast_ray_local(&self, ray: Ray2d, max_distance: f32) -> Option<RayIntersection2d> {
         let mut closest_intersection: Option<RayIntersection2d> = None;
+        let mut intersection_count = 0;
 
         // Iterate through vertices to create edges
         for i in 0..self.vertices.len() {
@@ -26,6 +27,7 @@ impl<const N: usize> RayCast2d for Polygon<N> {
             if let Some(intersection) =
                 segment.cast_ray((start + end) / 2.0, 0.0, ray, max_distance)
             {
+                intersection_count += 1;
                 if let Some(ref closest) = closest_intersection {
                     if intersection.distance < closest.distance {
                         closest_intersection = Some(intersection);
@@ -36,13 +38,25 @@ impl<const N: usize> RayCast2d for Polygon<N> {
             }
         }
 
-        closest_intersection
+        // check if the ray is inside the polygon
+        if intersection_count % 2 == 1 {
+            Some(
+                RayIntersection2d {
+                    normal: -ray.direction,
+                    position: ray.origin,
+                    distance: 0.0,
+                }
+            )
+        } else {
+            closest_intersection
+        }
     }
 }
 
 impl RayCast2d for BoxedPolygon {
     fn cast_ray_local(&self, ray: Ray2d, max_distance: f32) -> Option<RayIntersection2d> {
         let mut closest_intersection: Option<RayIntersection2d> = None;
+        let mut intersection_count = 0;
 
         // Iterate through vertices to create edges
         for i in 0..self.vertices.len() {
@@ -61,6 +75,7 @@ impl RayCast2d for BoxedPolygon {
             if let Some(intersection) =
                 segment.cast_ray((start + end) / 2.0, 0.0, ray, max_distance)
             {
+                intersection_count += 1;
                 if let Some(ref closest) = closest_intersection {
                     if intersection.distance < closest.distance {
                         closest_intersection = Some(intersection);
@@ -71,7 +86,18 @@ impl RayCast2d for BoxedPolygon {
             }
         }
 
-        closest_intersection
+        // check if the ray is inside the polygon
+        if intersection_count % 2 == 1 {
+            Some(
+                RayIntersection2d {
+                    normal: -ray.direction,
+                    position: ray.origin,
+                    distance: 0.0,
+                }
+            )
+        } else {
+            closest_intersection
+        }
     }
 }
 

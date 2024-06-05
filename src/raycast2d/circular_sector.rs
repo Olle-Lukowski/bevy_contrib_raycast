@@ -7,6 +7,20 @@ use bevy::math::{
 
 impl RayCast2d for CircularSector {
     fn cast_ray_local(&self, ray: Ray2d, max_distance: f32) -> Option<RayIntersection2d> {
+        // first, check if we are inside the sector
+
+        let oc = ray.origin;
+        let length_squared = oc.length_squared();
+        if length_squared < self.arc.radius * self.arc.radius {
+            if Vec2::Y.angle_between(oc).abs() < self.arc.half_angle {
+                return Some(RayIntersection2d {
+                    normal: -ray.direction,
+                    position: ray.origin,
+                    distance: 0.0,
+                });
+            }
+        }
+
         let mut closest = None;
         if let Some(intersection) = self.arc.cast_ray_local(ray, max_distance) {
             closest = Some(intersection);

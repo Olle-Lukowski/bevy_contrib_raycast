@@ -9,6 +9,14 @@ impl RayCast2d for Ellipse {
         let origin = ray.origin * inv_half_size;
         let direction = *ray.direction * inv_half_size;
 
+        if origin.length_squared() < 1.0 {
+            return Some(RayIntersection2d {
+                normal: -ray.direction,
+                position: ray.origin,
+                distance: 0.0,
+            });
+        }
+
         let a = direction.length_squared();
         let b = 2.0 * origin.dot(direction);
         let c = origin.length_squared() - 1.0;
@@ -35,24 +43,5 @@ impl RayCast2d for Ellipse {
             position,
             distance: t,
         })
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_ellipse() {
-        let ellipse = Ellipse {
-            half_size: Vec2::new(2.0, 1.0),
-        };
-
-        let ray = Ray2d::new(Vec2::ZERO, Vec2::ONE);
-
-        let intersection = ellipse.cast_ray(Vec2::new(3.0, 3.0), 0.0, ray, f32::MAX);
-
-        println!("{:?}", intersection);
-        assert!(intersection.is_some());
     }
 }

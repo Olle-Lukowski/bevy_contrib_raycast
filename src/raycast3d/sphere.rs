@@ -1,15 +1,16 @@
-use crate::{RayCast2d, RayIntersection2d};
+use crate::{RayCast3d, RayIntersection3d};
 
-use bevy::math::{primitives::Circle, Dir2, Ray2d};
+use bevy::math::{primitives::Sphere, Dir3, Ray3d};
 
-impl RayCast2d for Circle {
-    fn cast_ray_local(&self, ray: Ray2d, max_distance: f32) -> Option<RayIntersection2d> {
+impl RayCast3d for Sphere {
+    fn cast_ray_local(&self, ray: Ray3d, max_distance: f32) -> Option<RayIntersection3d> {
         let oc = ray.origin;
+
         let length_squared = oc.length_squared();
 
         // Check if the ray origin is inside the circle
         if length_squared < self.radius * self.radius {
-            return Some(RayIntersection2d {
+            return Some(RayIntersection3d {
                 normal: -ray.direction,
                 position: ray.origin,
                 distance: 0.0,
@@ -27,9 +28,9 @@ impl RayCast2d for Circle {
             let t = (-b - discriminant.sqrt()) / (2.0 * a);
             if t > 0.0 && t < max_distance {
                 let intersection = ray.origin + t * *ray.direction;
-                Some(RayIntersection2d {
+                Some(RayIntersection3d {
                     // TODO: Check if unwrapping is fine
-                    normal: Dir2::new(intersection).unwrap(),
+                    normal: Dir3::new(intersection).unwrap(),
                     position: intersection,
                     distance: t,
                 })

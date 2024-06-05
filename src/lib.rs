@@ -36,14 +36,19 @@ pub trait RayCast3d: Primitive3d {
         ray: Ray3d,
         max_distance: f32,
     ) -> Option<RayIntersection3d> {
-        // get the inverse of the position and rotation
         let inv_rotation = rotation.inverse();
-
         let local_origin = inv_rotation * (ray.origin - position);
-        let local_direction = inv_rotation * ray.direction;
-        let local_ray = Ray3d::new(local_origin, *local_direction);
+        let local_direction = inv_rotation * *ray.direction;
+        let local_ray = Ray3d::new(local_origin, local_direction);
 
-        self.cast_ray_local(local_ray, max_distance)
+        if let Some(mut intersection) = self.cast_ray_local(local_ray, max_distance) {
+            let rotation = rotation;
+            intersection.position = rotation * intersection.position + position;
+            intersection.normal = Dir3::new(rotation * *intersection.normal).unwrap();
+            Some(intersection)
+        } else {
+            None
+        }
     }
 }
 
